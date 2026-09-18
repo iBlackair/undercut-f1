@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>undercutf1</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="brand">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2-6h6l2 6h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="17" r="2.4" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="17" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>
+        <div class="brand-name">undercut<span>f1</span></div>
+      </div>
+
+      <div class="nav-section-label">Live Session</div>
+      <div class="nav-list" id="nav-main"></div>
+
+      <div class="nav-section-label">Tools</div>
+      <div class="nav-list" id="nav-tools"></div>
+
+      <div class="sidebar-footer">
+        <div class="session-pill" id="session-pill">
+          <div class="dot dot-off"></div>
+          <div id="session-pill-text">No session running</div>
+        </div>
+        <button class="btn btn-primary btn-block" id="open-session-panel">Start / Replay Session</button>
+      </div>
+    </nav>
+
+    <!-- Main column -->
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="screen-title" id="screen-title">Timing Tower</div>
+          <div class="session-meta" id="session-meta">No session running</div>
+        </div>
+        <div class="topbar-right">
+          <div class="status-chip" id="track-status-chip">
+            <div class="dot dot-off"></div>
+            <span id="track-status-text">NO SESSION</span>
+          </div>
+          <button class="chip-btn" id="clock-toggle-btn" title="Pause/Resume the session clock">
+            <span id="clock-toggle-label">Pause</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="body">
+        <!-- Timing Tower screen -->
+        <section class="screen" id="screen-timingtower">
+          <div class="grid-scroll">
+            <div class="grid-inner">
+              <div class="grid-header" id="grid-header"></div>
+              <div id="grid-rows"></div>
+              <div class="empty-state" id="empty-state" hidden>
+                <div class="empty-title">No session running</div>
+                <div class="empty-sub">Start a live session or replay a recording to see the timing tower.</div>
+                <button class="btn btn-primary" id="empty-state-btn">Start / Replay Session</button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="rail">
+            <div class="card">
+              <div class="card-title">Status</div>
+              <div class="stat-row">
+                <div class="stat-label">Track</div>
+                <div class="status-chip" id="rail-track-chip">
+                  <div class="dot dot-off"></div>
+                  <span id="rail-track-text">—</span>
+                </div>
+              </div>
+              <div class="stat-row">
+                <div class="stat-label">Local time</div>
+                <div class="stat-value mono" id="local-time">—</div>
+              </div>
+              <div class="stat-row">
+                <div class="stat-label">Session remaining</div>
+                <div class="stat-value mono" id="session-remaining">—</div>
+              </div>
+            </div>
+
+            <div class="card card-grow">
+              <div class="card-title">Race Control</div>
+              <div class="rc-list" id="rc-list"></div>
+            </div>
+          </aside>
+        </section>
+
+        <!-- Placeholder for unbuilt screens -->
+        <!-- Race Control -->
+        <section class="screen screen-simple" id="screen-racecontrol" hidden>
+          <div class="page-scroll">
+            <div class="rc-full-list" id="rc-full-list"></div>
+          </div>
+        </section>
+
+        <!-- Tyre Stints -->
+        <section class="screen screen-simple" id="screen-tyrestints" hidden>
+          <div class="page-scroll">
+            <div class="stint-legend" id="stint-legend"></div>
+            <div class="stint-list" id="stint-list"></div>
+          </div>
+        </section>
+
+        <!-- Team Radio -->
+        <section class="screen" id="screen-teamradio" hidden>
+          <div class="page-scroll" style="flex:1;">
+            <div class="radio-list" id="radio-list"></div>
+          </div>
+          <aside class="rail">
+            <div class="card card-grow">
+              <div class="card-title">Transcription</div>
+              <div id="radio-transcription" class="radio-transcription">Select a team radio capture to play or transcribe it.</div>
+              <audio id="radio-player" controls style="width:100%; margin-top:12px;" hidden></audio>
+            </div>
+          </aside>
+        </section>
+
+        <!-- Championship -->
+        <section class="screen screen-simple" id="screen-championship" hidden>
+          <div class="page-scroll" id="championship-content"></div>
+        </section>
+
+        <!-- Driver Tracker -->
+        <section class="screen" id="screen-drivertracker" hidden>
+          <div class="tracker-list" id="tracker-list"></div>
+          <div class="tracker-map-wrap">
+            <svg id="tracker-svg" class="tracker-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
+            <div class="tracker-message" id="tracker-message" hidden></div>
+          </div>
+        </section>
+
+        <!-- Timing History -->
+        <section class="screen screen-simple" id="screen-timinghistory" hidden>
+          <div class="page-scroll">
+            <div class="history-controls">
+              <button class="chip-btn" id="history-prev-lap">◄ Lap</button>
+              <div class="history-lap-label mono" id="history-lap-label">Lap —</div>
+              <button class="chip-btn" id="history-next-lap">Lap ►</button>
+            </div>
+            <div class="grid-header history-header" id="history-header"></div>
+            <div id="history-rows"></div>
+            <div class="history-charts" id="history-charts"></div>
+          </div>
+        </section>
+
+        <!-- Logs -->
+        <section class="screen screen-simple" id="screen-logs" hidden>
+          <div class="page-scroll">
+            <div class="logs-controls">
+              <label for="logs-min-level">Minimum level</label>
+              <select id="logs-min-level" class="select">
+                <option value="Trace">Trace</option>
+                <option value="Debug">Debug</option>
+                <option value="Information" selected>Information</option>
+                <option value="Warning">Warning</option>
+                <option value="Error">Error</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </div>
+            <div class="log-list" id="log-list"></div>
+          </div>
+        </section>
+
+        <!-- Info -->
+        <section class="screen screen-simple" id="screen-info" hidden>
+          <div class="page-scroll">
+            <div class="card" id="info-card"></div>
+          </div>
+        </section>
+
+        <!-- Account -->
+        <section class="screen screen-simple" id="screen-account" hidden>
+          <div class="page-scroll">
+            <div class="card" id="account-card">
+              <div class="card-title">F1TV Account</div>
+              <div id="account-status"></div>
+              <div class="modal-section" style="margin-top:16px;">
+                <div class="modal-section-title">Set access token</div>
+                <div class="modal-section-sub">
+                  Paste the <code>login-session</code> cookie value from a browser signed in to
+                  account.formula1.com (see the README's "F1 TV Account Login" section for the manual steps).
+                  A native login flow isn't available in this web GUI yet.
+                </div>
+                <textarea id="account-token-input" class="text-input" rows="3" placeholder="Paste access token…"></textarea>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                  <button class="btn btn-primary" id="account-save-token">Save Token</button>
+                  <button class="chip-btn" id="account-logout">Log Out</button>
+                </div>
+                <div class="modal-error" id="account-error" hidden></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer-bar">
+        <div class="key-hint"><span class="key">Live</span><span>Polling every 1s</span></div>
+        <div class="key-hint"><span class="key">GUI</span><span>Dark Cockpit direction</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session panel (Start Live / Replay) -->
+  <div class="modal-backdrop" id="session-modal-backdrop" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Session</div>
+        <button class="icon-btn" id="close-session-panel" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-error" id="session-error" hidden></div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Live session</div>
+          <div class="modal-section-sub">Connects to the live F1 timing feed. Every message received is automatically recorded to disk so it can be replayed later.</div>
+          <button class="btn btn-primary" id="start-live-btn">Start Live Session</button>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Replay a recording</div>
+          <div class="modal-section-sub">Pick a previously recorded or imported session to replay.</div>
+          <div class="replay-list" id="replay-list">
+            <div class="replay-empty">Loading recordings…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
